@@ -1,0 +1,37 @@
+modLoader = "javafml"
+loaderVersion = "47.2.0"
+issueTrackerURL = "${issue_tracker}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "vstestaddon"
+version = "0.01"
+displayName = "VS Test Addon"
+authors = ["BryBry154"]
+description = '''
+Silly
+'''
+#logoFile = "icon.png"
+
+[[dependencies.vstestaddon]]
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.vstestaddon]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.vstestaddon]]
+modId = "valkyrienskies"
+mandatory = true
+versionRange = "[${vs2_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+
