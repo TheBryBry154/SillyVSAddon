@@ -82,36 +82,36 @@ public class EvilGooberBlock extends Block {
                 .setValue(POWERED, powered);
     }
         @Override
-        public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-            if (!level.isClientSide) {
+        public void neighborChanged(BlockState state, Level neighborChangedLevel, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+            if (!neighborChangedLevel.isClientSide) {
                 boolean wasPowered = isPowered(state);
-                boolean isPowered = level.hasNeighborSignal(pos);
+                boolean isPowered = neighborChangedLevel.hasNeighborSignal(pos);
                 System.out.println("Magnet at " + pos + " neighbor changed. Was powered: " + wasPowered + ", Is powered: " + isPowered);
 
                 if (isPowered != wasPowered) {
                     BlockState newState = state.setValue(POWERED, isPowered);
-                    level.setBlock(pos, newState, 3);
+                    neighborChangedLevel.setBlock(pos, newState, 3);
 
                     if (isPowered) {
                         System.out.println("Magnet at " + pos + " just got powered - activating");
-                        level.scheduleTick(pos, this, 1);
+                        neighborChangedLevel.scheduleTick(pos, this, 1);
                     }
                 }
             }
-            super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+            super.neighborChanged(state, neighborChangedLevel, pos, block, fromPos, isMoving);
         }
 
 
 
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        super.onPlace(state, level, pos, oldState, isMoving);
-        if (!level.isClientSide) {
+    public void onPlace(BlockState state, Level onPlaceLevel, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, onPlaceLevel, pos, oldState, isMoving);
+        if (!onPlaceLevel.isClientSide) {
 
            if (isPowered(state)) {
                System.out.println("powering an Evil Goober Block at:" + pos + " (onPlace function)");
-                level.scheduleTick(pos, this, 2);
-                ForceApplier.onEvilGooberBlockPowered((ServerLevel) level, pos );
+               onPlaceLevel.scheduleTick(pos, this, 2);
+                ForceApplier.onEvilGooberBlockPowered((ServerLevel) onPlaceLevel, pos );
             }
         }
     }
@@ -120,14 +120,14 @@ public class EvilGooberBlock extends Block {
 
 
     @Override
-    public void tick(BlockState pState, ServerLevel level, BlockPos pos, RandomSource pRandom) {
+    public void tick(BlockState pState, ServerLevel tickLevel, BlockPos pos, RandomSource pRandom) {
         if(isPowered(pState)){
             System.out.println("powering an Evil Goober Block at:" + pos + " (Tick function)");
 
-            var shipObjectWorld = VSGameUtilsKt.getShipObjectWorld(level);
+            var shipObjectWorld = VSGameUtilsKt.getShipObjectWorld(tickLevel);
             boolean isOnShip = shipObjectWorld.isBlockInShipyard(
                     pos.getX(), pos.getY(), pos.getZ(),
-                    level.dimension().location().toString()
+                    tickLevel.dimension().location().toString()
             );
 
             if (isOnShip) {
@@ -137,20 +137,20 @@ public class EvilGooberBlock extends Block {
                 }
             }
 
-            ForceApplier.onEvilGooberBlockPowered(level, pos);
+            ForceApplier.onEvilGooberBlockPowered(tickLevel, pos);
 
         }
 
 
-        super.tick(pState, level, pos, pRandom);
+        super.tick(pState, tickLevel, pos, pRandom);
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!level.isClientSide && !newState.is(this)) {
+    public void onRemove(BlockState state, Level onRemoveLevel, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!onRemoveLevel.isClientSide && !newState.is(this)) {
 
         }
-        super.onRemove(state, level, pos, newState, isMoving);
+        super.onRemove(state, onRemoveLevel, pos, newState, isMoving);
     }
 
 

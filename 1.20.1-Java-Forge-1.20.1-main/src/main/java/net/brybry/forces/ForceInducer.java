@@ -14,10 +14,17 @@ public class ForceInducer implements ShipForcesInducer {
     private final ConcurrentLinkedQueue<Vector3d> forces = new ConcurrentLinkedQueue<>();
     private Vector3d lastPosition = null;
 
+    private long lastApplyForcesCall= 0;
+    private int totalForceApplications= 0;
+
     public void addForce(Vector3d force) {
         forces.add(new Vector3d(force));
+        long currentTime = System.currentTimeMillis();
 
-
+        long timeSinceLastApply = currentTime - lastApplyForcesCall;
+        System.out.println("Force added to queue. Queue size: " + forces.size() +
+                ", Time since last applyForces: " + timeSinceLastApply + "ms" +
+                ", Total applications: " + totalForceApplications);
     }
 
 
